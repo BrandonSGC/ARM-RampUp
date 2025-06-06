@@ -17,7 +17,9 @@
       }
     }
   },
-  "variables": {},
+  "variables": {
+    "exampleVariable": "From parent template"
+  },
   "functions": [],
   "resources": [
     {
@@ -26,7 +28,7 @@
       "name": "[parameters('storageAccountName')]",
       "location": "[resourceGroup().location]",
       "sku": {
-        "name": "Standard_GRS"
+        "name": "Standard_LRS"
       },
       "kind": "StorageV2",
       "properties": {
@@ -58,7 +60,60 @@
           }
         }
       ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "nestedTemplate1",
+      "properties": {
+        "mode": "Incremental",
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "variables": {
+            "exampleVariable": "From nested template."
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2022-09-01",
+              "name": "nestedstorageaccountbgc",
+              "location": "[resourceGroup().location]",
+              "sku": {
+                "name": "Standard_LRS"
+              },
+              "kind": "StorageV2"
+            }
+          ],
+          "outputs": {
+            "testVar": {
+              "type": "string",
+              "value": "[variables('exampleVariable')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "linkedTemplate",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://blobllink.com",
+          "contentVersion": "1.0.0.0"
+        }
+      }
     }
   ],
-  "outputs": {}
+  "outputs": {
+    "messageFromTemplate": {
+      "type": "string",
+      "value": "[reference('nestedTemplate1').outputs.testVar.value]"
+    }
+  }
 }
