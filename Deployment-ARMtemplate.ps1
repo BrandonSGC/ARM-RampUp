@@ -15,5 +15,5 @@ New-AzResourceGroup -Name $rg -Location "Canada Central"
 New-AzResourceGroupDeployment `
   -Name "arm-deployment" `
   -ResourceGroupName $rg `
-  -TemplateFile "arm-template.json" `
+  -TemplateFile "./arm-template.json" `
   -Verbose

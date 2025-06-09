@@ -15,6 +15,14 @@
       "metadata": {
         "description": "Name of the virtual network."
       }
+    },
+    "deployZone": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "scriptName": {
+      "type": "string",
+      "defaultValue": "\\\"Brandon Gomez\\\""
     }
   },
   "variables": {
@@ -125,12 +133,44 @@
       "properties": {
         "supportsHttpsTrafficOnly": true
       }
+    },
+    {
+      "condition": "[parameters('deployZone')]",
+      "type": "Microsoft.Network/dnsZones",
+      "apiVersion": "2018-05-01",
+      "name": "myZoneBGC.com",
+      "location": "global"
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "runPowerShellInlineWithOutput",
+      "location": "[resourceGroup().location]",
+      "kind": "AzurePowerShell",
+      "properties": {
+        "azPowerShellVersion": "8.3",
+        "scriptContent": "
+          param([string] $scriptName)
+          $output = \"Hello {0}\" -f $scriptName
+          Write-Output $output
+          $DeploymentScriptOutputs = @{}
+          $DeploymentScriptOutputs['text'] = $output
+        ",
+        "arguments": "[concat('-scriptName', ' ', parameters('scriptName'))]",
+        "timeout": "PT1H",
+        "cleanupPreference": "OnSuccess",
+        "retentionInterval": "P1D"
+      }
     }
   ],
   "outputs": {
     "messageFromTemplate": {
       "type": "string",
       "value": "[reference('nestedTemplate1').outputs.testVar.value]"
+    },
+    "result": {
+      "value": "[reference('runPowerShellInlineWithOutput').outputs.text]",
+      "type": "string"
     }
   }
 }
