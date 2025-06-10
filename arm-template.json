@@ -18,11 +18,17 @@
     },
     "deployZone": {
       "type": "bool",
-      "defaultValue": true
+      "defaultValue": true,
+      "metadata": {
+        "description": "Set to true to deploy the DNS Zone resource. Set to false to skip deployment of this resource."
+      }
     },
     "scriptName": {
       "type": "string",
-      "defaultValue": "\\\"Brandon Gomez\\\""
+      "defaultValue": "Brandon Gomez",
+      "metadata": {
+        "description": "Name to be used in the PowerShell script within the deployment script resource."
+      }
     }
   },
   "variables": {
@@ -32,6 +38,7 @@
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
+      "comments": "This is just a simple storage account resource.",
       "apiVersion": "2021-09-01",
       "name": "[parameters('storageAccountName')]",
       "location": "[resourceGroup().location]",
@@ -45,6 +52,7 @@
     },
     {
       "type": "Microsoft.Network/virtualNetworks",
+      "comments": "This is a Virtual Network resource that contains a child resource.",
       "apiVersion": "2022-11-01",
       "name": "[parameters('vnetName')]",
       "location": "[resourceGroup().location]",
@@ -58,6 +66,7 @@
       "resources": [
         {
           "type": "subnets",
+          "comments": "This is the child resource of the Virtual Network.",
           "apiVersion": "2022-11-01",
           "name": "default",
           "dependsOn": [
@@ -71,6 +80,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
+      "comments": "This is going to deploy a nested template.",
       "apiVersion": "2022-09-01",
       "name": "nestedTemplate1",
       "properties": {
@@ -107,6 +117,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
+      "comments": "This one deploys a linked template.",
       "apiVersion": "2022-09-01",
       "name": "linkedTemplate",
       "properties": {
@@ -119,6 +130,7 @@
     },
     {
       "type": "Microsoft.Storage/storageAccounts",
+      "comments": "Here we deploy 3 storage account resources using the copy property.",
       "apiVersion": "2021-09-01",
       "name": "[format('{0}storage{1}', copyIndex(), uniqueString(resourceGroup().id))]",
       "copy": {
@@ -136,6 +148,7 @@
     },
     {
       "condition": "[parameters('deployZone')]",
+      "comments": "This is a DNS Zone resource that is conditionally deployed depending on the parameter we pass.",
       "type": "Microsoft.Network/dnsZones",
       "apiVersion": "2018-05-01",
       "name": "myZoneBGC.com",
@@ -143,6 +156,7 @@
     },
     {
       "type": "Microsoft.Resources/deploymentScripts",
+      "comments": "This is a simple deployment script runnning PowerShell.",
       "apiVersion": "2020-10-01",
       "name": "runPowerShellInlineWithOutput",
       "location": "[resourceGroup().location]",
