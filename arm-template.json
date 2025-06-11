@@ -34,7 +34,25 @@
   "variables": {
     "exampleVariable": "From parent template"
   },
-  "functions": [],
+  "functions": [
+    {
+      "namespace": "RampUp",
+      "members": {
+        "uniqueStorageAccountName": {
+          "parameters": [
+            {
+              "name": "prefix",
+              "type": "string"
+            }
+          ],
+          "output": {
+            "type": "string",
+            "value": "[concat(toLower(parameters('prefix')), uniqueString(resourceGroup().id))]"
+          }
+        }
+      }
+    }
+  ],
   "resources": [
     {
       "type": "Microsoft.Network/virtualNetworks",
@@ -141,7 +159,7 @@
       "type": "Microsoft.Storage/storageAccounts",
       "comments": "Here we deploy multiple instances using the copy property.",
       "apiVersion": "2021-09-01",
-      "name": "[format('{0}storage{1}', copyIndex(), uniqueString(resourceGroup().id))]",
+      "name": "[concat(copyIndex(), RampUp.uniqueStorageAccountName('stgacc'))]",
       "copy": {
         "name": "storageAccountCopy",
         "count": 3
