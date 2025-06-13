@@ -150,7 +150,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/BrandonSGC/ARM-RampUp/refs/heads/main/storageaccount-create.json",
+          "uri": "https://raw.githubusercontent.com/BrandonSGC/ARM-RampUp/refs/heads/main/ARM-templates/storageaccount-create.json",
           "contentVersion": "1.0.0.0"
         }
       }
