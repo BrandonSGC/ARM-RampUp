@@ -18,15 +18,6 @@ module storage './modules/storage.bicep' = {
   }
 }
 
-// module keyvault './modules/keyvault.bicep' = {
-//   name: 'kvModule'
-//   params: {
-//     vaultName: generateUniqueKvName('bgkv')
-//     location: location
-//     secretValue: 'SuperSecret123'
-//   }
-// }
-
 // Reference an already created keyvault.
 resource keyvault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
   name: 'personalkeyvaultbgc'
