@@ -1,0 +1,31 @@
+{
+  "properties": {
+    "displayName": "Deny VM deployments outside approved regions",
+    "mode": "Indexed",
+    "description": "Denies VM creation in regions other than 'eastus' and 'westeurope'.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Compute"
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Compute/virtualMachines"
+          },
+          {
+            "field": "location",
+            "notIn": [
+              "eastus",
+              "westeurope"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "deny"
+      }
+    }
+  }
+}
