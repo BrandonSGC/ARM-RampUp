@@ -1,0 +1,32 @@
+{
+  "properties": {
+    "displayName": "Enforce tag 'environment=dev'",
+    "description": "Ensures that all resources have the tag 'environment' set to 'dev'. If the tag is missing, it will be added.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Tags"
+    },
+    "mode": "All",
+    "policyRule": {
+      "if": {
+        "field": "tags['environment']",
+        "exists": "false"
+      },
+      "then": {
+        "effect": "modify",
+        "details": {
+          "roleDefinitionIds": [
+            "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "operations": [
+            {
+              "operation": "add",
+              "field": "tags['environment']",
+              "value": "dev"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
