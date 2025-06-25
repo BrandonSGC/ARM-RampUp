@@ -1,0 +1,20 @@
+{
+  "properties": {
+    "displayName": "Audit Storage Accounts not using HTTPS",
+    "mode": "All",
+    "description": "Audits Storage Accounts that allow non-HTTPS traffic.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Storage"
+    },
+    "policyRule": {
+      "if": {
+        "field": "Microsoft.Storage/storageAccounts/supportsHttpsTrafficOnly",
+        "equals": false
+      },
+      "then": {
+        "effect": "audit"
+      }
+    }
+  }
+}
