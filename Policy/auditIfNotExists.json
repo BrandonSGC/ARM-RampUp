@@ -1,0 +1,26 @@
+{
+  "properties": {
+    "displayName": "Audit VMs without diagnostic settings",
+    "mode": "Indexed",
+    "description": "Audits VMs that do not have diagnostic settings configured.",
+    "metadata": {
+      "version": "1.0.0"
+    },
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "Microsoft.Compute/virtualMachines"
+      },
+      "then": {
+        "effect": "auditIfNotExists",
+        "details": {
+          "type": "Microsoft.Insights/diagnosticSettings",
+          "existenceCondition": {
+            "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+            "equals": "true"
+          }
+        }
+      }
+    }
+  }
+}
