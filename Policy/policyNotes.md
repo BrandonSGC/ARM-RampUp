@@ -21,11 +21,12 @@ The mode is configured depending on if the policy is targeting an Azure Resource
 
 #### Resource Manager Modes
 
-- **All**: Evaliate resource groups, subscriptions, and all resources.
-- **Indexed**: only evaluate resource tupes that support tags and locations.
+- **All**: Evaluate resource groups, subscriptions, and all resources.
+- **Indexed**: only evaluate resource types that support tags and locations.
 
 ## Policy Effects
-Each policy definition in Azure Policy has a single *effect* in its *policyRule*. That effect determines what happens when the policy rule is evaluated to match. The effects behave differently if they are for a new resource, an updated resource, or an existing resource.
+
+Each policy definition in Azure Policy has a single _effect_ in its _policyRule_. That effect determines what happens when the policy rule is evaluated to match. The effects behave differently if they are for a new resource, an updated resource, or an existing resource.
 
 | Effect              | Description                                                  |
 | ------------------- | ------------------------------------------------------------ |
@@ -41,3 +42,30 @@ Each policy definition in Azure Policy has a single *effect* in its *policyRule*
 | `manual`            |                                                              |
 | `mutate`            |                                                              |
 
+## Aliases
+
+You use property aliases to access specific properties for a resource type.
+
+### Array aliases
+
+Look inside an array of objects and apply the condition to each item. For example:
+
+You want to check that all network interfaces attached to a VM are in a certain subnet.
+That’s an array — because a VM can have multiple NICs.
+
+You’d use this alias:
+"field": "Microsoft.Network/networkInterfaces[*].subnet.id"
+
+## Greenfield vs Brownfield
+
+### Greenfield:
+
+- Refers to new resources that will be created after the policy is assigned.
+- The policy is evaluated during creation of the resource.
+- This is the default behavior of Azure Policy — it applies the policy to all future deployments
+
+### Brownfield:
+
+- Refers to resources that already exist before the policy was assigned.
+- Azure Policy evaluates compliance of these existing resources — but does not modify them automatically.
+- To take action on existing resources, you need to create a remediation task.

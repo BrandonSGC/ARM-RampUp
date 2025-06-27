@@ -1,7 +1,7 @@
 {
   "properties": {
     "displayName": "Audit VMs without diagnostic settings",
-    "mode": "Indexed",
+    "mode": "All",
     "description": "Audits VMs that do not have diagnostic settings configured.",
     "metadata": {
       "version": "1.0.0"

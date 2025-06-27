@@ -1,0 +1,73 @@
+{
+  "properties": {
+    "displayName": "Deploy diagnostic settings to Storage Accounts",
+    "mode": "All",
+    "description": "Deploys diagnostic settings to Storage Accounts if missing.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Monitoring"
+    },
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "Microsoft.Storage/storageAccounts"
+      },
+      "then": {
+        "effect": "deployIfNotExists",
+        "details": {
+          "type": "Microsoft.Insights/diagnosticSettings",
+          "name": "EnableStorageDiagnostics",
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "storageAccountId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "The resource ID of the Storage Account to which diagnostic settings will be applied."
+                    },
+                    "defaultValue": ""
+                  },
+                  "logAnalyticsId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "The resource ID of the Log Analytics workspace where logs will be sent."
+                    },
+                    "defaultValue": ""
+                  }
+                },
+                "resources": [
+                  {
+                    "type": "Microsoft.Insights/diagnosticSettings",
+                    "apiVersion": "2021-05-01-preview",
+                    "name": "setDiagnostics",
+                    "properties": {
+                      "targetResourceId": "[parameters('storageAccountId')]",
+                      "workspaceId": "[parameters('logAnalyticsId')]",
+                      "logs": [
+                        {
+                          "category": "StorageRead",
+                          "enabled": true,
+                          "retentionPolicy": {
+                            "enabled": true,
+                            "days": 30
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "properties": {
+    "displayName": "Append a tag and its value to new resource groups",
+    "mode": "All",
+    "description": "Appends the specified tag and value when any resource group which is missing this tag is created or updated.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Tags"
+    },
+    "parameters": {
+      "tagName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Tag Name",
+          "description": "Name of the tag, such as 'environment'"
+        },
+        "defaultValue": "append"
+      },
+      "tagValue": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Tag Value",
+          "description": "Value of the tag, such as 'production'"
+        },
+        "defaultValue": "true"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+          },
+          {
+            "field": "[concat('tags[', parameters('tagName'), ']')]",
+            "exists": "false"
+          }
+        ]
+      },
+      "then": {
+        "effect": "append",
+        "details": [
+          {
+            "field": "[concat('tags[', parameters('tagName'), ']')]",
+            "value": "[parameters('tagValue')]"
+          }
+        ]
+      }
+    }
+  }
+}
