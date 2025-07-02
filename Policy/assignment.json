@@ -1,0 +1,55 @@
+{
+  "name": "require-tag-assignment",
+  "properties": {
+    "displayName": "Require 'Environment' Tag on Storage Accounts",
+    "description": "This assignment enforces tagging on storage accounts, except for excluded scopes.",
+    "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/require-tag-env",
+    "scope": "/subscriptions/16e28336-0da6-4238-bf6c-6f3ee682a721/resourceGroups",
+    "notScopes": [
+      "/subscriptions/16e28336-0da6-4238-bf6c-6f3ee682a721/resourceGroups/MyResources"
+    ],
+    "enforcementMode": "DoNotEnforce",
+    "parameters": {
+      "tagName": {
+        "value": "Environment"
+      },
+      "tagValue": {
+        "value": "Production"
+      }
+    },
+    "identity": {
+      "type": "SystemAssigned"
+    },
+    "resourceSelectors": [
+      {
+        "name": "storage-only",
+        "selectors": [
+          {
+            "kind": "resourceType",
+            "in": [
+              "Microsoft.Storage/storageAccounts"
+            ]
+          }
+        ]
+      }
+    ],
+    "overrides": [
+      {
+        "kind": "policyEffect",
+        "value": "Audit",
+        "selectors": [
+          {
+            "kind": "policyDefinitionReferenceId",
+            "in": [
+              "require-tag-env"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "location": "eastus",
+  "identity": {
+    "type": "SystemAssigned"
+  }
+}
