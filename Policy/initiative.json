@@ -1,0 +1,33 @@
+{
+  "properties": {
+    "displayName": "Ramp up policy initiative",
+    "policyType": "Custom",
+    "description": "This initiative deploys the custom policies I have created using different effects.",
+    "version": "1.0.0",
+    "policyDefinitions": [
+      {
+        "policyDefinitionId": "/subscriptions/16e28336-0da6-4238-bf6c-6f3ee682a721/providers/Microsoft.Authorization/policyDefinitions/AuditStorageAccounts",
+        "definitionVersion": "1.0.0"
+      },
+      {
+        "policyDefinitionId": "/subscriptions/16e28336-0da6-4238-bf6c-6f3ee682a721/providers/Microsoft.Authorization/policyDefinitions/AuditVMsWithoutDiagnostics",
+        "definitionVersion": "1.0.0"
+      },
+      {
+        "policyDefinitionId": "/subscriptions/16e28336-0da6-4238-bf6c-6f3ee682a721/providers/Microsoft.Authorization/policyDefinitions/AppendTagResourceGroups",
+        "definitionVersion": "1.0.0"
+      },
+      {
+        "policyDefinitionId": "/subscriptions/16e28336-0da6-4238-bf6c-6f3ee682a721/providers/Microsoft.Authorization/policyDefinitions/DenyUnsupportedRegion",
+        "definitionVersion": "1.0.0"
+      },
+      {
+        "policyDefinitionId": "/subscriptions/16e28336-0da6-4238-bf6c-6f3ee682a721/providers/Microsoft.Authorization/policyDefinitions/EnforceTagEnvironmentDev",
+        "definitionVersion": "1.0.0"
+      },
+      {
+        "policyDefinitionId": "/subscriptions/16e28336-0da6-4238-bf6c-6f3ee682a721/providers/Microsoft.Authorization/policyDefinitions/DeployDiagnosticSettingsStorageAccounts"
+      }
+    ]
+  }
+}
