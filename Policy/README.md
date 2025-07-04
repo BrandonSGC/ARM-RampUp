@@ -28,19 +28,19 @@ The mode is configured depending on if the policy is targeting an Azure Resource
 
 Each policy definition in Azure Policy has a single _effect_ in its _policyRule_. That effect determines what happens when the policy rule is evaluated to match. The effects behave differently if they are for a new resource, an updated resource, or an existing resource.
 
-| Effect              | Description                                                  |
-| ------------------- | ------------------------------------------------------------ |
-| `deny`              | Blocks deployment if non-compliant                           |
-| `audit`             | Logs non-compliant resources                                 |
-| `auditIfNotExists`  | Audits only if related resource doesn't exist                |
-| `deployIfNotExists` | Automatically deploys a related resource if it doesn’t exist |
-| `append`            | Adds fields to a resource during deployment                  |
-| `disabled`          | Policy exists but doesn't do anything                        |
-| `modify`            | Alters a request during creation                             |
-| `addToNetworkGroup` |                                                              |
-| `denyAction`        |                                                              |
-| `manual`            |                                                              |
-| `mutate`            |                                                              |
+| Effect              | Description                                                                 |
+| ------------------- | --------------------------------------------------------------------------- |
+| `deny`              | Blocks deployment if non-compliant                                          |
+| `audit`             | Logs non-compliant resources                                                |
+| `auditIfNotExists`  | Audits only if related resource doesn't exist                               |
+| `deployIfNotExists` | Automatically deploys a related resource if it doesn’t exist                |
+| `append`            | Adds fields to a resource during deployment                                 |
+| `disabled`          | Policy exists but doesn't do anything                                       |
+| `modify`            | Alters a request during creation by changing values before deployment       |
+| `addToNetworkGroup` | Adds a resource to a specified network group (used with Microsoft Defender) |
+| `denyAction`        | Blocks specific actions (operations) on a resource                          |
+| `manual`            | Indicates manual enforcement is required; no automatic effect is applied    |
+| `mutate`            | Alters a resource after creation (e.g., updates config post-deployment)     |
 
 ### Important notes regarding certain effects:
 
@@ -87,9 +87,11 @@ You’d use this alias:
 
 ### Initiative
 
+An initiative is a group of policies (definitions) bundled together for easier management and reporting.
+
 ### Assignment
 
-An initiative is a group of policies (definitions) bundled together for easier management and reporting.
+An assignment is the act of applying a policy definition or initiative to a specific scope (like a subscription, resource group, or management group).
 
 #### Structure of an Assignment
 
@@ -125,9 +127,38 @@ An initiative is a group of policies (definitions) bundled together for easier m
 **Exemption**
 
 - An exemption is created after a policy or initiative is assigned and is used to temporarily waive compliance on specific resources without disabling the assignment.
-- You can set a justification, expiration date, and category (Mitigated, Waiver, etc...).
+- You can set a justification, expiration date, and category (Mitigated = "Temporary exemption", Waiver = "Permanent exemption", etc...).
 - Azure Policy Insights will still show that the resource is non-compliant, but with an exempted status.
 - We can create the exemption using the Azure Portal, PowerShell, Azure CLI...
+
+Exemption example:
+
+```
+{
+  "id": "/subscriptions/{subId}/resourceGroups/{rgName}/providers/Microsoft.Authorization/policyExemptions/resourceIsNotApplicable",
+  "apiVersion": "2020-07-01-preview",
+  "name": "resourceIsNotApplicable",
+  "type": "Microsoft.Authorization/policyExemptions",
+  "properties": {
+    "displayName": "This resource is scheduled for deletion",
+    "description": "This resources is planned to be deleted by end of quarter and has been granted a waiver to the policy.",
+    "metadata": {
+      "requestedBy": "Storage team",
+      "approvedBy": "IA",
+      "approvedOn": "2020-07-26T08:02:32.0000000Z",
+      "ticketRef": "4baf214c-8d54-4646-be3f-eb6ec7b9bc4f"
+    },
+    "policyAssignmentId": "/subscriptions/{mySubscriptionID}/providers/Microsoft.Authorization/policyAssignments/resourceShouldBeCompliantInit",
+    "policyDefinitionReferenceId": [
+      "requiredTags",
+      "allowedLocations"
+    ],
+    "exemptionCategory": "waiver",
+    "expiresOn": "2020-12-31T23:59:00.0000000Z",
+    "assignmentScopeValidation": "Default"
+  }
+}
+```
 
 Here is a table with the structure of an Exemption
 | **Property** | **Required** | **Description** |
@@ -140,7 +171,7 @@ Here is a table with the structure of an Exemption
 | `exemptionCategory` | ✅ Yes | The reason type: `Waiver` (permanent) or `Mitigated` (temporary or in progress). |
 | `expiresOn` | No | Optional expiration date/time in ISO 8601 format (`2025-12-31T23:59:59Z`). |
 | `metadata` | No | Optional metadata like who approved it, tracking info, or notes. |
-| `resourceSelectors` | No (advanced) | Filters to apply the exemption only to certain resources at the same scope. |
+| `resourceSelectors` | No | Filters to apply the exemption only to certain resources at the same scope. |
 
 ## Remediation tasks
 
