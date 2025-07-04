@@ -1,11 +1,12 @@
 {
   "properties": {
-    "displayName": "Deploy diagnostic settings to Storage Accounts",
-    "mode": "All",
-    "description": "Deploys diagnostic settings to Storage Accounts if missing.",
+    "name": "EnsurePublicNetworkAccessSTGs",
+    "displayName": "Ensure Storage Accounts have Public Network Access enabled",
+    "mode": "Indexed",
+    "description": "Deploys configuration to set 'publicNetworkAccess' to 'Enabled' for Storage Accounts if not already set.",
     "metadata": {
       "version": "1.0.0",
-      "category": "Monitoring"
+      "category": "Storage"
     },
     "policyRule": {
       "if": {
@@ -15,8 +16,12 @@
       "then": {
         "effect": "deployIfNotExists",
         "details": {
-          "type": "Microsoft.Insights/diagnosticSettings",
-          "name": "EnableStorageDiagnostics",
+          "type": "Microsoft.Storage/storageAccounts",
+          "name": "[field('name')]",
+          "existenceCondition": {
+            "field": "Microsoft.Storage/storageAccounts/publicNetworkAccess",
+            "equals": "Enabled"
+          },
           "roleDefinitionIds": [
             "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
           ],
@@ -27,42 +32,32 @@
                 "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                 "contentVersion": "1.0.0.0",
                 "parameters": {
-                  "storageAccountId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "The resource ID of the Storage Account to which diagnostic settings will be applied."
-                    },
-                    "defaultValue": ""
+                  "storageAccountName": {
+                    "type": "string"
                   },
-                  "logAnalyticsId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "The resource ID of the Log Analytics workspace where logs will be sent."
-                    },
-                    "defaultValue": ""
+                  "location": {
+                    "type": "string"
                   }
                 },
                 "resources": [
                   {
-                    "type": "Microsoft.Insights/diagnosticSettings",
-                    "apiVersion": "2021-05-01-preview",
-                    "name": "setDiagnostics",
+                    "type": "Microsoft.Storage/storageAccounts",
+                    "apiVersion": "2023-01-01",
+                    "name": "[parameters('storageAccountName')]",
+                    "location": "[parameters('location')]",
                     "properties": {
-                      "targetResourceId": "[parameters('storageAccountId')]",
-                      "workspaceId": "[parameters('logAnalyticsId')]",
-                      "logs": [
-                        {
-                          "category": "StorageRead",
-                          "enabled": true,
-                          "retentionPolicy": {
-                            "enabled": true,
-                            "days": 30
-                          }
-                        }
-                      ]
+                      "publicNetworkAccess": "Enabled"
                     }
                   }
                 ]
+              },
+              "parameters": {
+                "storageAccountName": {
+                  "value": "[field('name')]"
+                },
+                "location": {
+                  "value": "[field('location')]"
+                }
               }
             }
           }
