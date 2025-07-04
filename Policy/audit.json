@@ -1,16 +1,38 @@
 {
   "properties": {
-    "displayName": "Audit Storage Accounts not using HTTPS",
+    "name": "AuditStaticWebApps",
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "displayName": "Audit Static Web Apps with within locations and free sku",
+    "description": "Audit Static Web Apps with within locations and free sku",
     "mode": "All",
-    "description": "Audits Storage Accounts that allow non-HTTPS traffic.",
     "metadata": {
       "version": "1.0.0",
-      "category": "Storage"
+      "category": ""
     },
     "policyRule": {
       "if": {
-        "field": "Microsoft.Storage/storageAccounts/supportsHttpsTrafficOnly",
-        "equals": false
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Web/staticSites"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.Web/staticSites/sku.name",
+                "notEquals": "Free"
+              },
+              {
+                "field": "location",
+                "notIn": [
+                  "eastus2",
+                  "centralus",
+                  "westus2"
+                ]
+              }
+            ]
+          }
+        ]
       },
       "then": {
         "effect": "audit"
