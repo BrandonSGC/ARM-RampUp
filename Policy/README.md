@@ -1,7 +1,5 @@
 # Policy Notes
 
-## Evaluation Outcomes
-
 ## Structure of a Policy Definition
 
 | **Component** | **Required** | **Description**                                          |
@@ -191,3 +189,41 @@ Azure Policy remediation task feature is used to bring resources into compliance
 | `lastModifiedOn`        | No           | Timestamp of last modification (read-only).                                               |
 | `filters`               | No           | Optional filters to scope remediation to certain resources.                               |
 | `metadata`              | No           | Optional metadata for organizational purposes.                                            |
+
+## Evaluation Outcomes
+
+The following are the times or events that cause a resource to be evaluated:
+
+- A resource is created or updated in a scope with a policy assignment.
+- A scope gets a new assignment of a policy or initiative.
+- A policy or initiative already assigned to a scope is updated.
+- The standard compliance evaluation cycle that occurs once every 24 hours.
+
+### Trigger a manual policy scan
+
+We can trigger a manual policy scan using the REST API, Azure CLI, or Azure Powershell.
+
+**REST API**
+We can execute the post request in the following documentation: https://learn.microsoft.com/en-us/rest/api/policy/policy-states/trigger-subscription-evaluation?view=rest-policy-2019-10-01&tabs=HTTP
+
+**Azure CLI:**
+az policy state trigger-scan --resource-group "resourceGroupName"
+
+**Azure PowerShell**
+Start-AzPolicyComplianceScan -ResourceGroupName 'resourceGroupName'
+
+### Array properties evaluation
+
+In Azure Policy, some fields (aliases) return arrays instead of single values.
+For example:
+
+- A Network Security Group (Microsoft.Network/networkSecurityGroups) has an array of security rules.
+
+#### Syntax:
+
+```
+"count([field('<arrayAlias>')]) <comparisonOperator> <number>"
+"count([field('<arrayAlias>[?(@.<property> == <value>)]')]) <comparison> <number>" #This one is a filtered array.
+```
+
+## Control Plane vs Data Plane
