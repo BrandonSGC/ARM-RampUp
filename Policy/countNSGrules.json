@@ -1,0 +1,31 @@
+{
+  "properties": {
+    "mode": "All",
+    "displayName": "Count NSG rules",
+    "description": "Count the number of inbound deny rules in Network Security Groups (NSGs).",
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Network"
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/networkSecurityGroups"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Network/networkSecurityGroups/securityRules[?(@.direction=='Inbound' && @.access=='Deny')]"
+            },
+            "equals": 0
+          }
+        ]
+      },
+      "then": {
+        "effect": "audit"
+      }
+    }
+  }
+}
