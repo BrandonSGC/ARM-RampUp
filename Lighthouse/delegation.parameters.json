@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "mspOfferName": {
+      "value": "LighthouseDelegation"
+    },
+    "mspOfferDescription": {
+      "value": "Delegation to Brandon's tenant for managing resources"
+    },
+    "managedByTenantId": {
+      "value": "b7d33c50-1d07-4798-8f75-b0665181841e"
+    },
+    "authorizations": {
+      "value": [
+        {
+          "principalId": "dbf46a79-8168-4a7c-a972-585ba75c9f14",
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+          "principalIdDisplayName": "System Administrator"
+        },
+        {
+          "principalId": "dbf46a79-8168-4a7c-a972-585ba75c9f14",
+          "roleDefinitionId": "91c1777a-f3dc-4fae-b103-61d183457e46",
+          "principalIdDisplayName": "Managed Services Registration assignment Delete Role"
+        }
+      ]
+    },
+    "resourceGroups": {
+      "value": [
+        {
+          "rgName": "rgtesting"
+        },
+        {
+          "rgName": "rgtesting2"
+        }
+      ]
+    }
+  }
+}
