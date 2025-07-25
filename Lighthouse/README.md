@@ -1,37 +1,61 @@
-Azure Lighthouse
+# Azure Lighthouse Overview
 
-When a customer’s subscription or resource group is onboarded to Azure Lighthouse, two resources are created:
+Azure Lighthouse enables service providers to manage customer resources at scale, with high automation, security, and control. When a customer’s subscription or resource group is onboarded to Azure Lighthouse, two key Azure resources are created:
 
-- Registration definition.
-- Registration assignment.
+- **Registration Definition**
+- **Registration Assignment**
 
-Registration Definition
-The registration definition contains the details of the Azure Lighthouse offer (the managing tenant ID and the authorizations) that assign built-in roles to specific users, groups, and/or service principals in the managing tenant.
+---
 
-A registration definition is created at the subscription level for each delegated subscription, or in each subscription that contains a delegated resource group.
+## 📘 Registration Definition
 
-Registration assignment
-The registration assignment assigns the registration definition to a specific scope—that is, the onboarded subscription(s) and/or resource group(s).
+The **registration definition** contains the details of the Azure Lighthouse offer, including:
 
-A registration assignment is created in each delegated scope, so it will either be at the subscription group level or the resource group level, depending on what was onboarded.
+- The **managing tenant ID**
+- The **authorizations**, which assign built-in roles to specific users, groups, or service principals in the managing tenant
 
-Each registration assignment must reference a valid registration definition at the subscription level, tying the authorizations for that service provider to the delegated scope and thus granting access.
+A registration definition is always created at the **subscription level**:
 
-## Define roles and permissions
+- One per **delegated subscription**, or
+- One in each **subscription that contains a delegated resource group**
 
-As a service provider, you may want to perform multiple tasks for a single customer, requiring different access for different scopes. You can define as many authorizations as you need in order to assign the appropriate Azure built-in roles.
+---
 
-## Create an Azure Resource Manager Template
+## 📘 Registration Assignment
 
-You can create this template from the Azure Portal and it's a really easy way, hoewver, you can also create it manually if you prefer so.
+The **registration assignment** ties the registration definition to a specific scope—either:
 
-To onboard your customer, you'll need to create an Azure Resource Manager template with the registration definition and the registration assignment.
+- One or more **subscriptions**, or
+- Specific **resource groups**
 
-The delegation is defined through the following resource:
+Each registration assignment:
 
-### Registration Definition:
+- Is created in the **delegated scope** (subscription or resource group)
+- References a valid registration definition from the subscription level
+- Grants the authorized managing tenant access to that scope
 
-```
+---
+
+## 🔐 Define Roles and Permissions
+
+As a service provider, you may need different levels of access for different scenarios. Azure Lighthouse allows you to define **multiple authorizations** in your registration definition to grant appropriate **Azure built-in roles** (or custom roles) to each identity.
+
+---
+
+## 🛠️ Creating an Azure Resource Manager Template
+
+You can create a delegation template via:
+
+- The **Azure Portal** (easiest)
+- A **manually authored** ARM or Bicep template (more customizable)
+
+To onboard your customer, define both the **registration definition** and **registration assignment** in your template.
+
+---
+
+## 🧩 Sample Registration Definition
+
+```json
 {
   "type": "Microsoft.ManagedServices/registrationDefinitions",
   "apiVersion": "2019-09-01",
@@ -44,7 +68,7 @@ The delegation is defined through the following resource:
       {
         "principalId": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy",
         "principalIdDisplayName": "Brandon Admin",
-        "roleDefinitionId": "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c" // Contributor
+        "roleDefinitionId": "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
       }
     ]
   }
@@ -82,7 +106,7 @@ The delegation is defined through the following resource:
 
 ### Registration Assignment resource:
 
-```
+```json
 {
   "type": "Microsoft.Resources/deployments",
   "apiVersion": "2018-05-01",
