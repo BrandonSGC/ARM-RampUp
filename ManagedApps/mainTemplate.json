@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "trigger": {
+      "type": "Bool",
+      "metadata": {
+        "description": "If true will cause a failure"
+      }
+    },
+    "prefix": {
+      "type": "String",
+      "metadata": {
+        "description": "Prefix from the createuUI"
+      }
+    },
+    "newLocation": {
+      "defaultValue": "No value provided",
+      "type": "String",
+      "metadata": {
+        "description": "New allowed location"
+      }
+    }
+  },
+  "variables": {
+    "eventHubname": "[format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id))]",
+    "location": "[if(parameters('trigger'), 'westus', parameters('newLocation'))]",
+    "eventHubSkuCapacity": 1,
+    "eventHubSkuName": "Basic",
+    "eventhubSkuTier": "Basic"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.EventHub/namespaces",
+      "apiVersion": "2024-05-01-preview",
+      "name": "[variables('eventHubname')]",
+      "location": "[variables('location')]",
+      "sku": {
+        "capacity": "[variables('eventHubSkuCapacity')]",
+        "name": "[variables('eventHubSkuName')]",
+        "tier": "[variables('eventhubSkuTier')]"
+      },
+      "properties": {
+        "zoneRedundant": "true"
+      }
+    }
+  ]
+}

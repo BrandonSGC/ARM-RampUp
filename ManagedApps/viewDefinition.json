@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/viewdefinition/0.0.1-preview/ViewDefinition.json#",
+  "contentVersion": "0.0.0.1",
+  "views": [
+    {
+      "kind": "Overview",
+      "properties": {
+        "header": "Welcome to your ARM Ramp Up App",
+        "description": "Continue with the steps provided to you."
+      }
+    },
+    {
+      "kind": "Metrics",
+      "properties": {
+        "displayName": "EventHub Metrics",
+        "version": "1.0.0",
+        "charts": [
+          {
+            "displayName": "Incoming Bytes",
+            "chartType": "Line",
+            "metrics": [
+              {
+                "name": "IncomingBytes",
+                "aggregationType": "avg",
+                "resourceType": "Microsoft.EventHub/namespaces",
+                "namespace": "Microsoft.EventHub/namespaces"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
