@@ -20,6 +20,13 @@
       "metadata": {
         "description": "New allowed location"
       }
+    },
+    "minimumTlsVersion": {
+      "defaultValue": "1.2",
+      "type": "string",
+      "metadata": {
+        "description": "Minimum TLS version for the Event Hub namespace"
+      }
     }
   },
   "variables": {
@@ -41,7 +48,8 @@
         "tier": "[variables('eventhubSkuTier')]"
       },
       "properties": {
-        "zoneRedundant": "true"
+        "zoneRedundant": "true",
+        "minimumTlsVersion": "[parameters('minimumTlsVersion')]"
       }
     }
   ]

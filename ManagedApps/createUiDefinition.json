@@ -96,6 +96,44 @@
               "required": true
             },
             "visible": "[equals(steps('triggerselector').triggerfail, false)]"
+          },
+          {
+            "name": "minimumTlsVersion",
+            "type": "Microsoft.Common.DropDown",
+            "label": "Minimum TLS Version",
+            "toolTip": "Choose the minimum TLS version for the Event Hub namespace.",
+            "defaultValue": "1.2",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "1.0",
+                  "value": "1.0"
+                },
+                {
+                  "label": "1.1",
+                  "value": "1.1"
+                },
+                {
+                  "label": "1.2",
+                  "value": "1.2"
+                }
+              ],
+              "required": true
+            },
+            "visible": "[equals(steps('triggerselector').triggerfail, false)]"
+          }
+        ]
+      },
+      {
+        "name": "tags",
+        "label": "Tags",
+        "elements": [
+          {
+            "name": "resourceTags",
+            "type": "Microsoft.Common.TagsByResource",
+            "resources": [
+              "Microsoft.EventHub/namespaces"
+            ]
           }
         ]
       }
@@ -104,7 +142,8 @@
       "trigger": "[steps('triggerselector').triggerfail]",
       "prefix": "[basics('prefix')]",
       "newLocation": "[steps('triggerselector').NewlocationDropDown]",
-      "applicationResourceName": "[concat(basics('prefix'),'-app')]"
+      "applicationResourceName": "[concat(basics('prefix'),'-app')]",
+      "minimumTlsVersion": "[steps('triggerselector').minimumTlsVersion]"
     },
     "resourceTypes": [
       "Microsoft.EventHub/namespaces"
