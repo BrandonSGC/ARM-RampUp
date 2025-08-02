@@ -212,15 +212,24 @@ az policy state trigger-scan --resource-group "resourceGroupName"
 **Azure PowerShell**
 Start-AzPolicyComplianceScan -ResourceGroupName 'resourceGroupName'
 
-### Array properties evaluation
 
+### Order of evaluation on the effects:
+- disabled is checked first to determine whether the policy rule should be evaluated.
+- append and modify are then evaluated. Since either could alter the request, a change made might prevent an audit or deny effect from triggering. These effects are only available with a Resource Manager mode.
+- deny is then evaluated. By evaluating deny before audit, double logging of an undesired resource is prevented.
+- audit is evaluated.
+- manual is evaluated.
+- auditIfNotExists is evaluated.
+- denyAction is evaluated last.
+
+
+### Array properties evaluation
 In Azure Policy, some fields (aliases) return arrays instead of single values.
 For example:
 
 - A Network Security Group (Microsoft.Network/networkSecurityGroups) has an array of security rules.
 
 #### Syntax:
-
 ```
 "count([field('<arrayAlias>')]) <comparisonOperator> <number>"
 "count([field('<arrayAlias>[?(@.<property> == <value>)]')]) <comparison> <number>" #This one is a filtered array.
