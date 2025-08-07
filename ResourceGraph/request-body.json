@@ -1,0 +1,6 @@
+{
+  "subscriptions": [
+    "16e28336-0da6-4238-bf6c-6f3ee682a721"
+  ],
+  "query": "Resources | project name, type | limit 5"
+}
