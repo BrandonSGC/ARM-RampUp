@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.6.1.6515",
+      "templateHash": "3085789505121407565"
+    }
+  },
+  "parameters": {
+    "queryName": {
+      "type": "string",
+      "defaultValue": "List virtual machines with their network interface and public IP",
+      "metadata": {
+        "description": "The name of the shared query."
+      }
+    },
+    "queryCode": {
+      "type": "string",
+      "defaultValue": "resources | where type =~ 'microsoft.compute/virtualmachines' | extend nics=array_length(properties.networkProfile.networkInterfaces) | mv-expand nic=properties.networkProfile.networkInterfaces | where nics == 1 or nic.properties.primary =~ 'true' or isempty(nic) | project vmId = id, vmName = name, vmSize=tostring(properties.hardwareProfile.vmSize), nicId = tostring(nic.id) | join kind=leftouter (resources | where type =~ 'microsoft.network/networkinterfaces' | extend ipConfigsCount=array_length(properties.ipConfigurations) | mv-expand ipconfig=properties.ipConfigurations | where ipConfigsCount == 1 or ipconfig.properties.primary =~ 'true' | project nicId = id, publicIpId = tostring(ipconfig.properties.publicIPAddress.id)) on nicId | project-away nicId1 | summarize by vmId, vmName, vmSize, nicId, publicIpId | join kind=leftouter (resources | where type =~ 'microsoft.network/publicipaddresses' | project publicIpId = id, publicIpAddress = properties.ipAddress) on publicIpId | project-away publicIpId1",
+      "metadata": {
+        "description": "The Azure Resource Graph query to be saved to the shared query."
+      }
+    },
+    "queryDescription": {
+      "type": "string",
+      "defaultValue": "This query uses two leftouter join commands to bring together virtual machines created with the Resource Manager deployment model, their related network interfaces, and any public IP address related to those network interfaces.",
+      "metadata": {
+        "description": "The description of the saved Azure Resource Graph query."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ResourceGraph/queries",
+      "apiVersion": "2018-09-01-preview",
+      "name": "[parameters('queryName')]",
+      "location": "global",
+      "properties": {
+        "query": "[parameters('queryCode')]",
+        "description": "[parameters('queryDescription')]"
+      }
+    }
+  ]
+}
