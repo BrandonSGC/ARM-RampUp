@@ -7,6 +7,15 @@ ARG extends from ARM and provides efficient and performant resource exploration.
 - Assess the effect of applying policies in a vast cloud environment.
 - Query changes made to resource properties.
 
+## How Resource Graph is kept current
+
+When an Azure resource is updated, Azure Resource Manager notifies Azure Resource Graph about the change. Azure Resource Graph then updates its database. Azure Resource Graph also does a regular full scan. This scan ensures that Azure Resource Graph data is current if there are missed notifications. Or when a resource is updated outside of Azure Resource Manager.
+
+
+## Permissions in Azure Resource Graph
+To use Resource Graph, you must have appropriate rights in Azure role-based access control (Azure RBAC) with at least read access to the resources you want to query. No results are returned if you don't have at least read permissions to the Azure object or object group.
+
+
 ## Run Queries on Azure CLI:
 
 First we need to add the resource graph extension, for this we can run the following commands:
